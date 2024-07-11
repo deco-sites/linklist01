@@ -1,0 +1,13 @@
+{
+  "name": "Home",
+  "path": "/",
+  "sections": [
+    { "__resolveType": "Header" },
+    { "__resolveType": "site/sections/Social.tsx" },
+    { "__resolveType": "site/sections/Links.tsx" },
+    { "__resolveType": "site/sections/Image.tsx" },
+    { "__resolveType": "site/sections/Links.tsx" },
+    { "__resolveType": "Footer" }
+  ],
+  "__resolveType": "website/pages/Page.tsx"
+}

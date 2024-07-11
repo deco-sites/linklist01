@@ -1,0 +1,72 @@
+{
+  "/.deco/blocks/Groovy%20Vibes.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/Neutral.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/Preview%20%2Fsections%2FHeader.tsx.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Header.tsx"
+  },
+  "/.deco/blocks/Preview%20%2Fsections%2FLinks.tsx.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Links.tsx"
+  },
+  "/.deco/blocks/Preview%20%2Fsections%2Ftypes.ts.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/types.ts"
+  },
+  "/.deco/blocks/Serene%20Coastline.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/Sunset%20Glow.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/Urban%20Chic.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/Vanilla.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Theme/Theme.tsx"
+  },
+  "/.deco/blocks/app-site%252Fapps%252Fsite.ts.json": {
+    "blockType": "apps",
+    "__resolveType": "site/apps/site.ts"
+  },
+  "/.deco/blocks/blog.json": {
+    "blockType": "apps",
+    "__resolveType": "decohub/apps/blog.ts"
+  },
+  "/.deco/blocks/decohub.json": {
+    "blockType": "apps",
+    "__resolveType": "site/apps/decohub.ts"
+  },
+  "/.deco/blocks/htmx.json": {
+    "blockType": "apps",
+    "__resolveType": "decohub/apps/htmx.ts"
+  },
+  "/.deco/blocks/pages-Home-927328.json": {
+    "name": "Home",
+    "path": "/",
+    "blockType": "pages",
+    "__resolveType": "website/pages/Page.tsx"
+  },
+  "/.deco/blocks/site.json": {
+    "blockType": "apps",
+    "__resolveType": "site/apps/site.ts"
+  },
+  "/.deco/blocks/Header.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Header.tsx"
+  },
+  "/.deco/blocks/Footer.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Footer.tsx"
+  }
+}
