@@ -68,5 +68,13 @@
   "/.deco/blocks/Footer.json": {
     "blockType": "sections",
     "__resolveType": "site/sections/Footer.tsx"
+  },
+  "/.deco/blocks/Preview%20%2Fsections%2FImage.tsx.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Image.tsx"
+  },
+  "/.deco/blocks/Preview%20%2Fsections%2FComponent.tsx.json": {
+    "blockType": "sections",
+    "__resolveType": "site/sections/Component.tsx"
   }
 }

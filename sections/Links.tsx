@@ -1,89 +1,87 @@
-import { JSX } from "preact";
-import { Link, Symbol } from "../components/types.ts";
-import Icon, { AvailableIcons } from "../components/ui/Icon.tsx";
-import Image from "apps/website/components/Image.tsx";
+import { useSection } from "deco/hooks/useSection.ts";
+import type { AppContext } from "../apps/site.ts";
+import type { SectionProps } from "deco/mod.ts";
+import { toFileUrl } from "std/path/mod.ts";
+import type { HTMLWidget } from 'apps/admin/widgets.ts';
 
-export interface Props {
-  links?: Link[];
+interface Props {
+  /**
+   * @format rich-text
+   */
+  title?: string;
+  /**
+   * @format rich-text
+   * @title Input Placeholder
+   */
+  inputPlaceholder?: string;
+  /**
+   * @format rich-text
+   * @title Button Text
+   */
+  buttonText?: string;
+  content?: HTMLWidget;
 }
 
-export default function Main(
-  {
-    links = Array(3).fill(0).map(() => ({
-      icon: {
-        src:
-          "https://ozksgdmyrqcxcwhnbepg.supabase.co/storage/v1/object/public/assets/4959/fea5871e-2a02-4dd8-a12c-f2247dd59034",
-        alt: "Image",
-      },
-      label: "Change me",
-      href: "/",
-    })),
-  }: Props,
-): JSX.Element | null {
-  function isImage(icon: AvailableIcons | Symbol): icon is Symbol {
-    return (icon as Symbol).src !== undefined;
-  }
+const ROOT = toFileUrl(Deno.cwd()).href;
 
-  function isLink(list: Link | Symbol): list is Link {
-    return (list as Link).href !== undefined;
-  }
+const useCustomComponent = <T = Record<string, unknown>>(
+  component: string,
+  props?: T,
+  otherProps: { href?: string } = {},
+) => useSection({
+  ...otherProps,
+  props: {
+    props,
+    component: component.replace(ROOT, ""),
+    __resolveType: "site/sections/Component.tsx",
+  },
+});
 
+export async function action(
+  props: Props,
+  req: Request,
+  ctx: AppContext
+): Promise<Props> {
+  const form = await req.formData();
+  const response = `${form.get("response") ?? ""}`;
+  if (!response) {
+    return { ...props, content: { "You didn't answer." } };
+  }
+  return { ...props, content: { `You answered: ${response}` }
+};
+}
+
+export function loader(props: Props) {
+  return props;
+}
+
+export default function FormSection({
+  title = "Say something",
+  inputPlaceholder = "Enter your text here...",
+  buttonText = "Submit",
+  content = { "Result will appear here." },
+}: Props) {
   return (
-    <div class="flex flex-col items-center max-w-[688px] mx-auto w-full lg:px-0 px-6">
-      {links && links?.length > 0 && (
-        <ul class="flex flex-col items-center justify-center w-full">
-          {links?.map((list: Link | Symbol, index: number) => {
-            if (isLink(list)) {
-              return (
-                <li class="w-full my-2" key={index}>
-                  <a
-                    target="_blank"
-                    href={list.href}
-                    class="flex min-h-[52px] items-center justify-start px-2 rounded-full border border-primary w-full"
-                  >
-                    {list.icon && !isImage(list.icon) && (
-                      <Icon
-                        size={20}
-                        id={list.icon}
-                        strokeWidth={2}
-                        class="min-w-[36px]"
-                      />
-                    )}
-
-                    {list.icon && isImage(list.icon) && (
-                      <Image
-                        src={list.icon.src || ""}
-                        alt={list.icon.alt}
-                        width={list.icon.width || 36}
-                        height={list.icon.height || 36}
-                      />
-                    )}
-                    <span class="text-center text-sm w-full">
-                      {list.label}
-                    </span>
-
-                    <Icon
-                      size={20}
-                      id="share"
-                      strokeWidth={2}
-                      class="group-hover:opacity-100 opacity-0"
-                    />
-                  </a>
-                </li>
-              );
-            } else {
-              return (
-                <Image
-                  src={list.src || ""}
-                  alt={list.alt}
-                  width={list.width || 688}
-                  height={list.height || 344}
-                />
-              );
-            }
-          })}
-        </ul>
-      )}
-    </div>
+    <section>
+      <div class="container mx-auto py-12">
+        <h2 class="text-3xl font-bold mb-4">{title}</h2>
+        <form
+          hx-post={useCustomComponent(import.meta.url, { title, inputPlaceholder, buttonText, content })}
+          hx-target="closest section"
+          hx-swap="innerHTML"
+        >
+          <input
+            type="text"
+            name="response"
+            placeholder={inputPlaceholder}
+            className="input input-bordered w-full mb-4"
+          />
+          <button type="submit" class="btn btn-primary">
+            {buttonText}
+          </button>
+        </form>
+        <div class="mt-12">{content}</div>
+      </div>
+    </section>
   );
 }

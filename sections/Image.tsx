@@ -1,45 +1,71 @@
-import { ImageWidget } from "apps/admin/widgets.ts";
-import { Picture, Source } from "apps/website/components/Picture.tsx";
+import { useComponent } from "./Component.tsx";
+import type { AppContext } from "../apps/site.ts";
 
-export interface Picture {
-  mobile?: ImageWidget;
-  desktop?: ImageWidget;
-  alt?: string;
+interface Props {
+  /**
+   * @format rich-text
+   */
+  title?: string;
+  /**
+   * @format text-area
+   */
+  inputPlaceholder?: string;
+  /**
+   * @format text-area
+   */
+  buttonText?: string;
+  /**
+   * @format text-area
+   */
+  content?: string;
 }
 
-export default function Image({
-  mobile =
-    "https://ozksgdmyrqcxcwhnbepg.supabase.co/storage/v1/object/public/assets/4959/2bb6e3b9-90e8-49b0-86ce-465d6856343e",
-  desktop =
-    "https://ozksgdmyrqcxcwhnbepg.supabase.co/storage/v1/object/public/assets/4959/89934286-9a29-4ebc-bc90-39117d2e7edb",
-  alt = "Image",
-}: Picture) {
-  return (
-    <div class="max-w-[688px] mx-auto py-2 w-full lg:px-0 px-6">
-      <figure class="relative">
-        <Picture>
-          <Source
-            media="(max-width: 327px)"
-            src={mobile || ""}
-            width={327}
-            height={344}
-          />
-          <Source
-            media="(min-width: 688px)"
-            src={desktop ? desktop : mobile || ""}
-            width={688}
-            height={344}
-          />
-          <img
-            class="w-full object-cover"
-            sizes="(max-width: 640px) 100vw, 30vw"
-            src={mobile}
-            alt={alt}
-            decoding="async"
-            loading="lazy"
-          />
-        </Picture>
-      </figure>
-    </div>
-  );
+export async function action(
+  props: Props,
+  req: Request,
+  ctx: AppContext
+): Promise<Props> {
+  const form = await req.formData();
+  const response = `${form.get("response") ?? ""}`;
+  if (!response) {
+    return { ...props, content: "You didn't answer." };
+  }
+  return { ...props, content: `You answered: ${response}` };
 }
+
+ export function loader(props: Props) {
+   return props;
+ }
+
+ export default function FormSection({
+   title = "Say something",
+   inputPlaceholder = "Enter your text here...",
+   buttonText = "Submit",
+   content = "Result will appear here.",
+ }: Props) {
+   return (
+     <section>
+       <div class="container mx-auto py-12 relative">
+         <h2 class="text-3xl text-center font-bold mb-4">{title}</h2>
+         <form
+           hx-post={useComponent(import.meta.url, { title, inputPlaceholder, buttonText, content })}
+           hx-target="closest section"
+           hx-swap="outerHTML"
+           class="flex justify-center gap-2"
+         >
+           <input
+             type="text"
+             name="response"
+             placeholder={inputPlaceholder}
+             class="input input-bordered mb-4"
+           />
+           <button type="submit" class="btn btn-primary">
+             <span class="inline [.htmx-request_&]:hidden">{buttonText}</span> 
+             <span class="hidden [.htmx-request_&]:inline loading loading-spinner"/>
+           </button>
+         </form>
+         <div class="mt-5 text-center ">{content}</div>
+       </div>
+     </section>
+   );
+ }     

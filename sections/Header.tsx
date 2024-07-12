@@ -1,69 +1,57 @@
-import { Logo } from "../components/types.ts";
-import Image from "apps/website/components/Image.tsx";
-import { JSX } from "preact";
+import { useComponent } from "./Component.tsx";
+import type { AppContext } from "../apps/site.ts";
 
-export interface Props {
-  /** @description 104px x 104px image recommended */
-  logo?: Logo;
+interface Props {
   /**
-   * @format rich-text
-   * @default Click here to tweak this text however you want.
+   * @format color-input
    */
-  title?: string;
-  /**
-   * @format rich-text
-   * @default This text is entirely editable, tailor it freely.
-   */
-  description?: string;
+  backgroundColor?: string;
 }
 
-export default function Header(
-  {
-    logo = {
-      img:
-        "https://ozksgdmyrqcxcwhnbepg.supabase.co/storage/v1/object/public/assets/4763/df52c7fe-cb9d-48a8-9652-7f6bf49737ee",
-      link: "/",
-    },
-    title = "Click here to tweak this text however you want.",
-    description = "This text is entirely editable, tailor it freely.",
-  }: Props,
-): JSX.Element | null {
-  const logoImg = (
-    <Image
-      decoding="async"
-      src={logo?.img || ""}
-      alt={logo?.alt}
-      width={logo?.width || 104}
-      height={logo?.height || 104}
-    />
-  );
+export async function action(
+  props: Props,
+  req: Request,
+  ctx: AppContext
+): Promise<Props> {
+  const form = await req.formData();
+  const newColor = form.get("color") as string;
+  return { ...props, backgroundColor: newColor };
+}
 
-  const maybeLink = logo?.link
-    ? (
-      <a href={logo.link} target="_blank">
-        {logoImg}
-      </a>
-    )
-    : logo;
+export function loader(props: Props) {
+  return props;
+}
 
+export default function ColorCard({
+  backgroundColor = "#ffffff",
+}: Props) {
   return (
-    <header class="flex flex-col gap-4 items-center justify-center max-w-[746px] mx-auto pt-10 w-full lg:px-0 px-6">
-      {logo?.img && <div class="p-4 rounded-full">{maybeLink}</div>}
-      {title && (
-        <h1
-          class="lg:text-6xl text-4xl text-center"
-          dangerouslySetInnerHTML={{
-            __html: title,
-          }}
-        />
-      )}
-      {description && (
+    <section>
+      <div class="container text-center py-6 relative">
         <div
-          dangerouslySetInnerHTML={{
-            __html: description,
-          }}
-        />
-      )}
-    </header>
+          class="bg-white shadow-md rounded-lg p-6"
+          style={{ backgroundColor }}
+        >
+          <h2 class="text-2xl font-bold mb-4">Color Card</h2>
+          <form
+            hx-post={useComponent(import.meta.url, { backgroundColor })}
+            hx-target="closest section"
+            hx-swap="outerHTML"
+            class="flex justify-center gap-2"
+          >
+            <input
+              type="color"
+              name="color"
+              value={backgroundColor}
+              class="input input-bordered"
+            />
+            <button type="submit" class="btn btn-primary">
+              <span class="inline [.htmx-request_&]:hidden">Apply</span>
+              <span class="hidden [.htmx-request_&]:inline loading loading-spinner" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
   );
 }
